@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chessgui — offline-first chess library and analysis</title>
+<meta name="description" content="Chessgui is a cross-platform chess library, game analysis and play application that works fully offline. This is the UI prototype." />
+<link rel="icon" href="./app/favicon.ico" sizes="16x16 32x32 48x48" />
+<link rel="icon" type="image/png" sizes="192x192" href="./app/icon-192.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="./app/apple-touch-icon.png" />
+<meta name="theme-color" content="#f7f7f5" />
+<script>
+  // Match the app: honour a stored choice, else follow the system. Applied
+  // before first paint so the page does not flash the wrong theme.
+  try {
+    var t = localStorage.getItem('chessgui.theme');
+    if (t !== 'light' && t !== 'dark') {
+      t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
+<style>
+  /*
+    The app's own tokens (src/lib/styles/app.css). Duplicated rather than
+    imported: this page must stand alone at the site root, outside the app's
+    bundle and outside its service worker's scope. Keep the values in step.
+  */
+  :root {
+    --paper: #f7f7f5;  --surface: #ffffff; --chrome: #eceae7; --chrome-2: #e2dfdb;
+    --ink: #1b1b19;    --ink-2: #55534e;   --muted: #7a7770;  --faint: #a5a29b;
+    --rule: #d8d5d0;   --rule-strong: #b8b4ae; --focus: #2f6f9e;
+    --shadow: 0 6px 20px rgba(0,0,0,.12), 0 1px 3px rgba(0,0,0,.10);
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  :root[data-theme="dark"] {
+    --paper: #171716;  --surface: #201f1d; --chrome: #262523; --chrome-2: #2f2e2b;
+    --ink: #ecebe6;    --ink-2: #b9b6ae;   --muted: #918d85;  --faint: #6d6a63;
+    --rule: #35342f;   --rule-strong: #4d4b45; --focus: #6ea8d8;
+    --shadow: 0 6px 20px rgba(0,0,0,.5), 0 1px 3px rgba(0,0,0,.4);
+  }
+
+  /*
+    The app's bundled faces, borrowed from its folder. Self-hosted, so this
+    page fetches nothing at runtime either (§1.1). `swap`, not the app's
+    `block`: no measurement here depends on the mono advance width, so a
+    readable fallback beats a blank page.
+  */
+  @font-face {
+    font-family: 'IBM Plex Sans'; font-style: normal; font-weight: 400; font-display: swap;
+    src: url('./app/fonts/ibm-plex-sans-latin-400-normal.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'IBM Plex Sans'; font-style: normal; font-weight: 600; font-display: swap;
+    src: url('./app/fonts/ibm-plex-sans-latin-600-normal.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 400; font-display: swap;
+    src: url('./app/fonts/ibm-plex-mono-latin-400-normal.woff2') format('woff2');
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 15px/1.6 var(--sans);
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 56px 24px 96px; }
+
+  /* ---------------------------------------------------------------- head */
+
+  .eyebrow {
+    font: 10px/1 var(--mono);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin: 0 0 18px;
+  }
+  h1 {
+    font-size: 40px;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+    margin: 0 0 12px;
+  }
+  .lede {
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--ink-2);
+    margin: 0 0 32px;
+    max-width: 34em;
+  }
+
+  /* The call to action, above everything it describes. */
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 24px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 7px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: var(--shadow);
+  }
+  .cta:hover { opacity: .88; }
+  .cta:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+  .cta .arw { font-size: 17px; line-height: 1; }
+  .cta-note {
+    font: 12px/1.5 var(--mono);
+    color: var(--faint);
+    margin: 12px 0 0;
+  }
+
+  hr {
+    border: 0;
+    border-top: 1px solid var(--rule);
+    margin: 48px 0;
+  }
+
+  /* ---------------------------------------------------------------- body */
+
+  h2 {
+    font-size: 13px;
+    font-family: var(--mono);
+    font-weight: 400;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 16px;
+  }
+  h3 { font-size: 15px; margin: 0 0 4px; }
+  p  { margin: 0 0 16px; max-width: 36em; }
+  p:last-child { margin-bottom: 0; }
+
+  .rule-quote {
+    border-left: 3px solid var(--rule-strong);
+    padding: 2px 0 2px 18px;
+    margin: 0 0 20px;
+    color: var(--ink-2);
+    font-size: 16px;
+  }
+
+  ul { margin: 0 0 16px; padding-left: 20px; max-width: 36em; }
+  li { margin-bottom: 6px; }
+
+  /* Install steps: one card per platform. */
+  .steps { display: grid; gap: 12px; margin: 0 0 24px; }
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .step p { margin: 0; color: var(--ink-2); font-size: 14px; }
+  kbd {
+    font: 12px/1 var(--mono);
+    background: var(--chrome-2);
+    border: 1px solid var(--rule-strong);
+    border-radius: 4px;
+    padding: 3px 6px;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  .note {
+    background: var(--chrome);
+    border-radius: 8px;
+    padding: 16px 18px;
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+  .note strong { color: var(--ink); }
+
+  footer {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font: 12px/1.6 var(--mono);
+    color: var(--faint);
+  }
+
+  @media (max-width: 560px) {
+    .wrap { padding: 36px 18px 64px; }
+    h1 { font-size: 30px; }
+    .lede { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">UI Prototype</p>
+  <h1>Chessgui</h1>
+  <p class="lede">
+    A chess library, game analysis and play application that works entirely
+    offline. This page hosts the interface prototype.
+  </p>
+
+  <!-- Call to action, first thing after the description. -->
+  <a class="cta" href="./app/">Launch Chessgui <span class="arw" aria-hidden="true">&rarr;</span></a>
+  <p class="cta-note">Opens in this browser · works offline once installed</p>
+
+  <hr />
+
+  <h2>About</h2>
+  <p>
+    Chessgui organises a personal library of chess games — importing them,
+    searching them, grouping them into collections and tags, and opening any
+    one of them for analysis. It is built around a tabbed workspace: a Library
+    for finding games, a Game workspace for studying one, and Settings for
+    everything else.
+  </p>
+  <p class="rule-quote">
+    The network may add information; it must never be required for the
+    application to function.
+  </p>
+  <p>
+    That rule shapes the whole design. Games can synchronise from online
+    sources such as Chess.com and Lichess, but those are enrichment, never a
+    dependency: with no connection, previously fetched games stay browsable and
+    every other feature works unchanged — only synchronising is unavailable.
+    Fonts, icons, themes and translations are all bundled, so nothing is
+    fetched at runtime.
+  </p>
+  <p>
+    <strong>This is a prototype of the interface</strong>, not a working chess
+    application. It runs on sample data: the games, collections and
+    subscriptions you see are fixtures. Nothing is saved, and no real database
+    is opened.
+  </p>
+
+  <hr />
+
+  <h2>Install for offline use</h2>
+  <p>
+    Chessgui is a Progressive Web App, so it installs from the browser — no
+    download, no app store. Once installed it opens in its own window and runs
+    with no connection at all.
+  </p>
+
+  <div class="steps">
+    <div class="step">
+      <h3>Chrome or Edge, desktop</h3>
+      <p>
+        Launch the app, then click the install icon at the right-hand end of
+        the address bar — or open the browser menu and choose
+        <kbd>Install Chessgui</kbd>.
+      </p>
+    </div>
+    <div class="step">
+      <h3>Safari, macOS</h3>
+      <p>
+        Launch the app, then choose <kbd>File</kbd> &rarr;
+        <kbd>Add to Dock</kbd>. Requires macOS Sonoma or later.
+      </p>
+    </div>
+    <div class="step">
+      <h3>iPhone and iPad</h3>
+      <p>
+        Launch the app in Safari, tap the Share button, then
+        <kbd>Add to Home Screen</kbd>.
+      </p>
+    </div>
+    <div class="step">
+      <h3>Android</h3>
+      <p>
+        Launch the app in Chrome, open the browser menu, then
+        <kbd>Install app</kbd> or <kbd>Add to Home screen</kbd>.
+      </p>
+    </div>
+  </div>
+
+  <div class="note">
+    <p>
+      <strong>The first visit needs a connection.</strong> Installing stores
+      the whole application — around 700&nbsp;KB including fonts and icons — on
+      your device. After that it opens offline, and updates itself whenever you
+      next open it online.
+    </p>
+  </div>
+
+  <hr />
+
+  <h2>Before you start</h2>
+  <ul>
+    <li>
+      <strong>It is designed for a desktop-sized window.</strong> The layout
+      assumes at least 800&nbsp;&times;&nbsp;600, and says so rather than
+      reflowing below that.
+    </li>
+    <li>
+      <strong>Light and dark both work</strong>, and follow your system setting
+      unless you choose one in the app.
+    </li>
+    <li>
+      <strong>It speaks English, German and French</strong>, switchable from
+      the application menu.
+    </li>
+  </ul>
+
+  <footer>
+    Chessgui — interface prototype. Everything runs in your browser; no data
+    leaves this machine.
+  </footer>
+
+</div>
+</body>
+</html>
