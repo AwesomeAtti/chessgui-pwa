@@ -1,1 +1,0 @@
-import{A as e,C as t,K as n,ft as r,k as i,mt as a}from"../chunks/Bph4dr33.js";import"../chunks/xihTtKlq.js";import"../chunks/CRGiIlQM.js";var o=a({prerender:()=>!0,ssr:()=>!1});function s(a,o){var s=e(),c=n(s);t(c,()=>o.children??r),i(a,s)}export{s as component,o as universal};
