@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" href="/chessgui-pwa/favicon.ico" sizes="16x16 32x32 48x48" />
-  <link rel="icon" type="image/png" sizes="192x192" href="/chessgui-pwa/icon-192.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/chessgui-pwa/apple-touch-icon.png" />
+  <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="/chessgui-pwa/fonts/ibm-plex-sans-latin-400-normal.woff2" />
+        href="/fonts/ibm-plex-sans-latin-400-normal.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="/chessgui-pwa/fonts/ibm-plex-mono-latin-400-normal.woff2" />
-  <link rel="manifest" href="/chessgui-pwa/manifest.webmanifest" />
+        href="/fonts/ibm-plex-mono-latin-400-normal.woff2" />
+  <link rel="manifest" href="/manifest.webmanifest" />
   <meta name="theme-color" content="#f7f7f5" />
   <meta name="description" content="Chessgui — offline-first chess library and analysis." />
   <title>Chessgui</title>
@@ -26,37 +26,36 @@
       if (l) document.documentElement.lang = l;
     } catch (e) {}
   </script>
-  <link href="/chessgui-pwa/_app/immutable/entry/start.BT61IYb2.js" rel="modulepreload">
-		<link href="/chessgui-pwa/_app/immutable/chunks/C4Rz6Fhs.js" rel="modulepreload">
-		<link href="/chessgui-pwa/_app/immutable/chunks/Bph4dr33.js" rel="modulepreload">
-		<link href="/chessgui-pwa/_app/immutable/chunks/CrVsee7W.js" rel="modulepreload">
-		<link href="/chessgui-pwa/_app/immutable/entry/app.19fR3F_R.js" rel="modulepreload">
-		<link href="/chessgui-pwa/_app/immutable/chunks/xihTtKlq.js" rel="modulepreload">
-		<link href="/chessgui-pwa/_app/immutable/nodes/0.DBUGq9Gv.js" rel="modulepreload">
-		<link href="/chessgui-pwa/_app/immutable/chunks/URIZyVn7.js" rel="modulepreload">
+  <link href="/_app/immutable/entry/start.DGN-8-MY.js" rel="modulepreload">
+		<link href="/_app/immutable/chunks/D9YqgABr.js" rel="modulepreload">
+		<link href="/_app/immutable/chunks/urIJyU-c.js" rel="modulepreload">
+		<link href="/_app/immutable/chunks/S2XMljCj.js" rel="modulepreload">
+		<link href="/_app/immutable/entry/app.CdTdaUDn.js" rel="modulepreload">
+		<link href="/_app/immutable/chunks/xihTtKlq.js" rel="modulepreload">
+		<link href="/_app/immutable/nodes/0.D2XeFqZL.js" rel="modulepreload">
+		<link href="/_app/immutable/chunks/BLV_LJfS.js" rel="modulepreload">
 		
-		<link href="/chessgui-pwa/_app/immutable/assets/0.CwpyBcIF.css" rel="stylesheet">
+		<link href="/_app/immutable/assets/0.CwpyBcIF.css" rel="stylesheet">
 </head>
 <body data-sveltekit-preload-data="hover">
   <div style="display:contents">
 			<script>
 				{
-					__sveltekit_1cogfx5 = {
-						base: "/chessgui-pwa",
-						assets: "/chessgui-pwa"
+					__sveltekit_sqoir4 = {
+						base: ""
 					};
 
 					const element = document.currentScript.parentElement;
 
 					Promise.all([
-						import("/chessgui-pwa/_app/immutable/entry/start.BT61IYb2.js"),
-						import("/chessgui-pwa/_app/immutable/entry/app.19fR3F_R.js")
+						import("/_app/immutable/entry/start.DGN-8-MY.js"),
+						import("/_app/immutable/entry/app.CdTdaUDn.js")
 					]).then(([kit, app]) => {
 						kit.start(app, element);
 					});
 
 					if ('serviceWorker' in navigator) {
-						const script_url = '/chessgui-pwa/service-worker.js';
+						const script_url = '/service-worker.js';
 						const policy = globalThis?.window?.trustedTypes?.createPolicy(
 							'sveltekit-trusted-url',
 							{ createScriptURL(url) { return url; } }
