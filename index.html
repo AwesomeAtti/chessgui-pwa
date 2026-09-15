@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Chessgui — a chess library and analysis application</title>
-<meta name="description" content="Chessgui is a chess library and analysis application that installs from your browser and runs on your desktop without the internet. This is the technology preview." />
+<title>Chessgui — a chess library and analysis tool</title>
+<meta name="description" content="Chessgui is a chess library and analysis tool that installs from your browser and runs on your desktop without the internet. This is the technology preview." />
 <link rel="icon" href="./app/favicon.ico" sizes="16x16 32x32 48x48" />
 <link rel="icon" type="image/png" sizes="192x192" href="./app/icon-192.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="./app/apple-touch-icon.png" />
@@ -124,7 +124,7 @@
   font:10px/1.8 var(--mono);color:var(--faint)}
  @media(max-width:560px){.heroline h1{font-size:25px}.page{padding:0 16px 50px}}
 
- /* two acts: a titled movement, not a stack of equal bands */
+ /* acts: a titled movement, not a stack of equal bands */
  .act{margin-top:52px}
  .act-hd{display:flex;align-items:baseline;gap:12px;border-bottom:2px solid var(--ink);padding-bottom:9px;margin-bottom:26px}
  .act-hd .r{font:11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
@@ -218,15 +218,17 @@
  .hero .lede{font-size:17px;line-height:1.5;color:var(--ink);max-width:52ch;margin:0 0 10px;text-wrap:balance}
  .hero .rule{font:11px/1.6 var(--mono);letter-spacing:.02em;color:var(--muted);margin:0 0 18px;
   padding-left:11px;border-left:2px solid var(--rule-strong)}
- /* drafted copy */
+ /* body copy */
  .para{font-size:14px;line-height:1.65;color:var(--muted);max-width:64ch;margin:0 0 22px}
  .cell-p{font-size:12px;line-height:1.55;color:var(--muted);margin:0}
  .act-lede{font-size:15.5px;line-height:1.6;color:var(--ink);max-width:58ch;margin:0 0 24px;text-wrap:balance}
  .ws .para{font-size:13.5px}
- /* real captures */
+ /* screenshots */
  .shot{display:block;width:100%;height:auto;max-width:100%;border-radius:6px;border:1px solid var(--rule)}
  .shotwrap .shot{border:0;border-radius:0}
  .gamecol .shot,.gamefigs .shot{border-radius:5px}
+ .src{display:inline-flex;align-items:center;gap:7px}
+ .src .mk{flex:none;opacity:.9}
 </style>
 </head>
 <body>
@@ -242,7 +244,7 @@
       <span class="sp"></span>
       <span class="meta">GPL-3.0-or-later</span>
     </div>
-    <p class="lede">A chess library and analysis application that installs from your browser.</p>
+    <p class="lede">A chess library and analysis tool that installs from your browser.</p>
     <p class="rule">Run on your desktop without the internet</p>
     <div class="shotwrap">
       <img class="shot" src="assets/library-light.png" alt="The Library workspace: sidebar of collections, tags and subscriptions at the left, a search field and a table of games at the right." width="1600" height="1000">
@@ -264,9 +266,9 @@
 
     <div class="stackrow">
       <div class="st"><div class="k">Framework</div><div class="v">Svelte</div><div class="ver">5.57.0 · runes</div><p class="cell-p">Compiles the interface ahead of time, so very little framework code ships with it.</p></div>
-      <div class="st"><div class="k">Storage</div><div class="v">SQLite</div><div class="ver">3.53.4 · wasm</div><p class="cell-p">Games live in a proper database, not a pile of text files. That is what makes real game management possible — collections, tags, filters and a search that answers across thousands of games.</p></div>
+      <div class="st"><div class="k">Storage</div><div class="v">SQLite</div><div class="ver">3.53.4</div><p class="cell-p">Games live in a proper database, not a pile of text files. That is what makes real game management possible — collections, tags, filters and a search that answers across thousands of games.</p></div>
       <div class="st"><div class="k">Board</div><div class="v">Chessground</div><div class="ver">10.1.1 · Lichess</div><p class="cell-p">The board itself — dragging, animation, arrows, coordinates.</p></div>
-      <div class="st"><div class="k">Rules</div><div class="v">chessops</div><div class="ver">0.15.1 · Lichess</div><p class="cell-p">Positions, legality and SAN. Movetext is parsed, never trusted.</p></div>
+      <div class="st"><div class="k">Rules</div><div class="v">chessops</div><div class="ver">0.15.1 · Lichess</div><p class="cell-p">Move parsing, SAN, and checking that every move is legal.</p></div>
       <div class="st"><div class="k">Icons</div><div class="v">Lucide</div><div class="ver">1.41.0</div><p class="cell-p">One open icon set, bundled with the application rather than fetched.</p></div>
     </div>
 
@@ -312,14 +314,13 @@
       <div>
         <p class="lbl"><span class="n">01</span> Navigation</p>
         <h2>Browser-like navigation you already know</h2>
-        <p class="para" style="margin-bottom:0">Workspaces open as tabs. The Library stays pinned at the left, each game you open takes its own tab, and moving between them leaves everything as you left it — the search text, the scroll position, the row you had selected.</p>
-        <div class="chips"><span class="chip"><b>Library</b> pinned</span><span class="chip">One tab per <b>game</b></span><span class="chip">State <b>retained</b></span></div>
+        <p class="para" style="margin-bottom:0">Every game you open takes its own tab, and you move between them the way you move between pages in a web browser. The Library stays pinned at the left, so there is always a way back to it.</p>
       </div>
       <div class="fig"><img class="shot" src="assets/tabbar.png" alt="The tab bar: a pinned Library tab, two game tabs and a Settings tab, with the application menu at the right." width="1600" height="44"></div>
     </div>
 
     <div class="xplat">
-      <div class="xp"><div class="k">Cross-platform</div><div class="v">macOS = Windows = Linux</div></div>
+      <div class="xp"><div class="k">Cross-platform</div><div class="v">macOS · Windows · Linux</div></div>
       <div class="xp"><div class="k">Theme</div><div class="v">Light and dark</div></div>
       <div class="xp"><div class="k">Languages</div><div class="v">EN · DE · FR</div></div>
     </div>
@@ -354,13 +355,12 @@
         <p class="claim">Import games from online sources, or subscribe and keep receiving them.</p>
         <div class="stacklist">
           <div class="sl"><span class="i">&rarr;</span><span class="t">File</span><span class="d">PGN already on your machine</span></div>
-          <div class="sl"><span class="i">&rarr;</span><span class="t">Online</span><span class="d">by username, from a source below</span></div>
+          <div class="sl"><span class="i">&rarr;</span><span class="t">Online</span><span class="d">follow a player on chess.com or lichess</span></div>
           <div class="sl"><span class="i">&rarr;</span><span class="t">Paste</span><span class="d">movetext straight into the dialog</span></div>
           <div class="sl anch"><span class="i">&infin;</span><span class="t">Subscribe</span><span class="d">checked periodically · new games arrive on their own</span></div>
         </div>
         <div class="srcs">
-          <span class="src">chess.com</span><span class="src">lichess</span>
-          <span class="srcnote">brand marks bundled · Simple Icons</span>
+          <span class="src"><svg class="mk" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0a3.85 3.85 0 0 0-3.875 3.846A3.84 3.84 0 0 0 9.73 6.969l-2.79 1.85c0 .622.144 1.114.434 1.649H9.83c-.014.245-.014.549-.014.925 0 .025.003.048.006.071-.064 1.353-.507 3.472-3.62 5.842-.816.625-1.423 1.495-1.806 2.533a.33.33 0 0 0-.045.084 8.124 8.124 0 0 0-.39 2.516c0 .1.216 1.561 8.038 1.561s8.038-1.46 8.038-1.561c0-2.227-.824-4.048-2.24-5.133-4.034-3.08-3.586-5.74-3.644-6.838h2.458c.29-.535.434-1.027.434-1.649l-2.79-1.836a3.86 3.86 0 0 0 1.604-3.123A3.873 3.873 0 0 0 13.445.275c-.004-.002-.01.004-.015.004A3.76 3.76 0 0 0 12 0Z"/></svg>chess.com</span><span class="src"><svg class="mk" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10.457 6.161a.237.237 0 0 0-.296.165c-.8 2.785 2.819 5.579 5.214 7.428.653.504 1.216.939 1.591 1.292 1.745 1.642 2.564 2.851 2.733 3.178a.24.24 0 0 0 .275.122c.047-.013 4.726-1.3 3.934-4.574a.257.257 0 0 0-.023-.06L18.204 3.407 18.93.295a.24.24 0 0 0-.262-.293c-1.7.201-3.115.435-4.5 1.425-4.844-.323-8.718.9-11.213 3.539C.334 7.737-.246 11.515.085 14.128c.763 5.655 5.191 8.631 9.081 9.532.993.229 1.974.34 2.923.34 3.344 0 6.297-1.381 7.946-3.85a.24.24 0 0 0-.372-.3c-3.411 3.527-9.002 4.134-13.296 1.444-4.485-2.81-6.202-8.41-3.91-12.749C4.741 4.221 8.801 2.362 13.888 3.31c.056.01.115 0 .165-.029l.335-.197c.926-.546 1.961-1.157 2.873-1.279l-.694 1.993a.243.243 0 0 0 .02.202l6.082 10.192c-.193 2.028-1.706 2.506-2.226 2.611-.287-.645-.814-1.364-2.306-2.803-.422-.407-1.21-.941-2.124-1.56-2.364-1.601-5.937-4.02-5.391-5.984a.239.239 0 0 0-.165-.295z"/></svg>lichess</span>
         </div>
       </div>
       <div class="ws">
@@ -384,9 +384,7 @@
           <div class="sl anch"><span class="i">&mdash;</span><span class="t">Game Controls</span><span class="d">transport, never scrolls away</span></div>
         </div>
 
-        <p class="para" style="margin-bottom:0">The board fills the space it is given, with the evaluation bar beside it. Everything else lives in one fixed column at the right, and the controls hold their place at the foot of it — they never scroll away mid-analysis.</p>
-        <div class="chips"><span class="chip"><b>Board</b> + evaluation bar</span><span class="chip"><b>Stacked</b> sections</span><span class="chip"><b>Controls</b> anchored</span></div>
-      </div>
+              </div>
     </div>
 
     <!-- the third workspace. engines and databases share one row pattern, so one card holds both. -->
@@ -433,11 +431,9 @@
         <div class="big">GPL-3.0<span>or later</span></div>
         <p class="cell-p" style="font-size:12.5px">Free software under the GNU General Public License, version&nbsp;3 or later. It has to be: Chessground and chessops are both GPL, and both are compiled into the application.</p>
       </div>
-      <p class="cap">Chessground and chessops are GPL</p>
     </div>
   </div>
 
-  <footer>Needs a window of at least 800×600 · no data leaves this machine</footer>
 </div>
 
 </body>
